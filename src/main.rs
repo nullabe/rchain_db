@@ -1,3 +1,7 @@
+use rchain_db::db::blockchain::Blockchain;
+
 fn main() {
-    println!("Hello, world!");
+    let blockchain = Blockchain::new();
+
+    println!("{:?}", blockchain);
 }
