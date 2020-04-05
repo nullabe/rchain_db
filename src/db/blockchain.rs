@@ -7,12 +7,6 @@ pub struct Blockchain {
     current_transactions: Vec<Transaction>,
 }
 
-impl Default for Blockchain {
-    fn default() -> Self {
-        Blockchain::new()
-    }
-}
-
 impl Blockchain {
     pub fn new() -> Self {
         let blocks: Vec<Block> = Vec::new();
@@ -28,5 +22,11 @@ impl Blockchain {
 
     pub fn last_block(&self) -> Option<&Block> {
         self.blocks.last()
+    }
+}
+
+impl Default for Blockchain {
+    fn default() -> Self {
+        Blockchain::new()
     }
 }
