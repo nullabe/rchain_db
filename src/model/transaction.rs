@@ -1,20 +1,28 @@
-use crate::model::block::Block;
-
-#[derive(Debug)]
-pub struct Transaction<'blockchain> {
-    block: Option<&'blockchain Block<'blockchain>>,
+#[derive(Debug, Clone)]
+pub struct Transaction {
     sender: String,
     receiver: String,
     amount: f64,
 }
 
-impl<'blockchain> Transaction<'blockchain> {
+impl Transaction {
     pub fn new(sender: String, receiver: String, amount: f64) -> Self {
-        Transaction {
-            block: None,
+        Self {
             sender,
             receiver,
             amount,
         }
+    }
+
+    pub fn get_sender(&self) -> String {
+        self.sender.clone()
+    }
+
+    pub fn get_receiver(&self) -> String {
+        self.receiver.clone()
+    }
+
+    pub fn get_amount(&self) -> f64 {
+        self.amount
     }
 }

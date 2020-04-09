@@ -1,26 +1,52 @@
-use crate::model::blockchain::Blockchain;
+use crate::hasher::Hasher;
+use crate::model::transaction::Transaction;
 
-#[derive(Debug)]
-pub struct Block<'blockchain> {
-    blockchain: &'blockchain Blockchain<'blockchain>,
+#[derive(Debug, Clone)]
+pub struct Block {
     hash: Option<String>,
     index: usize,
+    transactions: Vec<Transaction>,
+    algorithm_proof: i64,
+    previous_block_hash: Option<String>,
 }
 
-impl<'blockchain> Block<'blockchain> {
-    pub fn new(blockchain: &'blockchain Blockchain) -> Self {
-        let mut block = Block {
-            blockchain,
+impl Block {
+    pub fn new(
+        index: usize,
+        transactions: Vec<Transaction>,
+        algorithm_proof: i64,
+        previous_block_hash: Option<String>,
+    ) -> Self {
+        let mut block = Self {
             hash: None,
-            index: 0,
+            index,
+            transactions,
+            algorithm_proof,
+            previous_block_hash,
         };
 
-        block.hash();
+        block.hash = block.hash();
 
         block
     }
 
-    fn hash(&mut self) {
-        self.hash = Some(String::from(""));
+    pub fn get_hash(&self) -> Option<&String> {
+        self.hash.as_ref()
+    }
+
+    pub fn get_index(&self) -> usize {
+        self.index
+    }
+
+    pub fn get_transactions(&self) -> Vec<Transaction> {
+        self.transactions.to_vec()
+    }
+
+    pub fn get_algorithm_proof(&self) -> i64 {
+        self.algorithm_proof
+    }
+
+    pub fn get_previous_block_hash(&self) -> Option<&String> {
+        self.previous_block_hash.as_ref()
     }
 }

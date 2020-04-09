@@ -1,6 +1,9 @@
 test:
-	cargo test test_db_blockchain
+	cargo test
 
 quality:
 	cargo fmt
 	cargo clippy
+
+run:
+	cargo run
