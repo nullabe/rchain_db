@@ -1,5 +1,6 @@
 #[cfg(test)]
 pub mod test_db_blockchain {
+    use rchain_db::model::block::Block;
     use rchain_db::model::blockchain::Blockchain;
 
     #[test]
@@ -27,7 +28,7 @@ pub mod test_db_blockchain {
     fn test_add_new_block() -> Result<(), String> {
         let mut blockchain = Blockchain::new();
 
-        match blockchain.add_new_block(666) {
+        match blockchain.add_new_block() {
             Err(err) => {
                 return Err(err.message().clone());
             }
@@ -39,6 +40,55 @@ pub mod test_db_blockchain {
             Some(_) => Ok(()),
 
             None => Err(String::from("There should be a block")),
+        }
+    }
+
+    #[test]
+    fn test_add_two_new_block() -> Result<(), String> {
+        let mut blockchain = Blockchain::new();
+
+        match blockchain.add_new_block() {
+            Err(err) => {
+                return Err(err.message().clone());
+            }
+
+            _ => (),
+        }
+
+        match blockchain.last_block() {
+            None => {
+                return Err(String::from("There should be a block"));
+            }
+
+            Some(_) => (),
+        }
+
+        match blockchain.add_new_block() {
+            Err(err) => {
+                return Err(err.message().clone());
+            }
+
+            _ => (),
+        }
+
+        let last_block: &Block;
+
+        match blockchain.last_block() {
+            None => {
+                return Err(String::from("There should be a block"));
+            }
+
+            Some(block) => {
+                last_block = block;
+            }
+        }
+
+        match last_block.get_algorithm_proof() {
+            0 => Err(String::from(
+                "Only first block can have an algorithm_proof eq to 0",
+            )),
+
+            _ => Ok(()),
         }
     }
 }
