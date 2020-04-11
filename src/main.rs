@@ -1,4 +1,4 @@
-use rchain_db::db::blockchain::Blockchain;
+use rchain_db::model::blockchain::Blockchain;
 
 fn main() {
     let blockchain = Blockchain::new();
