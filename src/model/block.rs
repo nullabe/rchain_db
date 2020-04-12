@@ -1,4 +1,4 @@
-use crate::hasher::ModelHasher;
+use crate::crypto::Hasher;
 use crate::model::transaction::Transaction;
 
 #[derive(Debug, Clone)]

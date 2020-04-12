@@ -1,10 +1,10 @@
 pub mod block;
 pub mod proof_of_work;
 
-pub trait ModelHasher {
+pub trait Hasher {
     fn hash(&mut self) -> Option<String>;
 }
 
-pub trait ValidatorHasher {
+pub trait Validator {
     fn validate(&self, to_validate: &str, difficulty: &str) -> bool;
 }
