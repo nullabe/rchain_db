@@ -1,7 +1,9 @@
-use rchain_db::model::blockchain::Blockchain;
+use rchain_db::http_api::node::Node;
+use std::error::Error;
 
-fn main() {
-    let blockchain = Blockchain::new();
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn Error>> {
+    Node::run("127.0.0.1", "8080").await?;
 
-    println!("{:?}", blockchain);
+    Ok(())
 }
