@@ -11,3 +11,7 @@ json = "^0.12"
 rust-crypto = "^0.2"
 tide = "^0.6"
 tokio = { version = "^0.2", features = ["full"] }
+
+[dev-dependencies]
+reqwest = { version = "^0.10", features = ["json", "cookies"] }
+futures-await-test = "^0.3"
