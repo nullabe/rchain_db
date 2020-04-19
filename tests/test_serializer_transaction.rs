@@ -8,8 +8,8 @@ pub mod test_serializer_transaction {
         let transaction = Transaction::new(String::from("s1"), String::from("r1"), 66.6);
 
         assert_eq!(
-            transaction.serialize(),
-            String::from("{\"sender\":\"s1\",\"receiver\":\"r1\",\"amount\":66.6}")
+            String::from("{\"sender\":\"s1\",\"receiver\":\"r1\",\"amount\":66.6}"),
+            transaction.serialize()
         );
     }
 }

@@ -5,6 +5,10 @@ use crate::serializer::JsonSerializer;
 
 impl JsonSerializer for Block {
     fn serialize(&self) -> String {
+        self.to_json_value().to_string()
+    }
+
+    fn to_json_value(&self) -> JsonValue {
         let mut block = JsonValue::new_object();
         let mut hash = String::from("");
         let mut previous_block_hash = String::from("");
@@ -24,9 +28,9 @@ impl JsonSerializer for Block {
         block["previous_block_hash"] = previous_block_hash.into();
 
         for transaction in self.get_transactions() {
-            block["transactions"].push(transaction.serialize()).ok();
+            block["transactions"].push(transaction.to_json_value()).ok();
         }
 
-        block.to_string()
+        block
     }
 }
