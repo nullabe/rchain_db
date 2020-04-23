@@ -18,7 +18,7 @@ impl Node {
 
         let mut node = Node { server };
 
-        node.routing();
+        node.register_routing();
 
         node.server.listen(format!("{}:{}", host, port)).await?;
 
