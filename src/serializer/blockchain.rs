@@ -1,23 +1,18 @@
+use serde::{Serialize, Deserialize, Serializer, Deserializer};
+use serde::ser::SerializeStruct;
+
 use crate::model::blockchain::Blockchain;
-use crate::serializer::JsonSerializer;
-use json::JsonValue;
 
-impl JsonSerializer for Blockchain {
-    fn serialize(&self) -> String {
-        self.to_json_value().to_string()
-    }
+const FIELDS_COUNT: usize = 2;
 
-    fn to_json_value(&self) -> JsonValue {
-        let mut blockchain = JsonValue::new_object();
-        let blocks = self.get_blocks();
+impl Serialize for Blockchain {
+    fn serialize<S>(&self, serializer: S) -> Result<<S as Serializer>::Ok, <S as Serializer>::Error> where
+        S: Serializer {
+        let mut blockchain = serializer.serialize_struct("Blockchain", self::FIELDS_COUNT)?;
 
-        blockchain["count"] = blocks.len().into();
-        blockchain["blocks"] = JsonValue::new_array();
+        blockchain.serialize_field("count", &self.get_blocks().len()).ok();
+        blockchain.serialize_field("blocks", &self.get_blocks()).ok();
 
-        for block in blocks {
-            blockchain["blocks"].push(block.to_json_value()).ok();
-        }
-
-        blockchain
+        blockchain.end()
     }
 }

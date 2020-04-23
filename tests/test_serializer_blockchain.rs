@@ -1,7 +1,9 @@
 #[cfg(test)]
 pub mod test_serializer_blockchain {
+    use serde::Serialize;
+    use serde_json::value::Serializer;
+
     use rchain_db::model::blockchain::Blockchain;
-    use rchain_db::serializer::JsonSerializer;
 
     #[test]
     fn test_serialize() {
@@ -11,8 +13,8 @@ pub mod test_serializer_blockchain {
         blockchain.add_new_block().ok();
 
         assert_eq!(
-            String::from("{\"count\":1,\"blocks\":[{\"hash\":\"910e768724bbd3f48320fd25c81b0e0bfcb57682b849d4f2a6be3750a96ac5e6\",\"index\":0,\"transactions\":[{\"sender\":\"s1\",\"receiver\":\"r1\",\"amount\":66.6}],\"algorithm_proof\":0,\"previous_block_hash\":\"\"}]}"),
-            blockchain.serialize()
+            String::from("{\"blocks\":[{\"algorithm_proof\":0,\"hash\":\"e5fd528412f1210a2baf296a849ba880ee212a49a3f6275d8446afef6c2c1f48\",\"index\":0,\"previous_block_hash\":\"\",\"transactions\":[{\"amount\":66.6,\"receiver\":\"r1\",\"sender\":\"s1\"}]}],\"count\":1}"),
+            blockchain.serialize(Serializer).unwrap().to_string()
         );
     }
 }

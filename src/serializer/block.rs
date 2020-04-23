@@ -1,36 +1,29 @@
-use json::JsonValue;
+use serde::{Serialize, Deserialize, Serializer, Deserializer};
+use serde::ser::SerializeStruct;
 
 use crate::model::block::Block;
-use crate::serializer::JsonSerializer;
 
-impl JsonSerializer for Block {
-    fn serialize(&self) -> String {
-        self.to_json_value().to_string()
-    }
+const FIELDS_COUNT: usize = 5;
 
-    fn to_json_value(&self) -> JsonValue {
-        let mut block = JsonValue::new_object();
-        let mut hash = String::from("");
-        let mut previous_block_hash = String::from("");
+impl Serialize for Block {
+    fn serialize<S>(&self, serializer: S) -> Result<<S as Serializer>::Ok, <S as Serializer>::Error> where
+        S: Serializer {
+        let mut block = serializer.serialize_struct("Block", self::FIELDS_COUNT)?;
 
-        if let Some(self_hash) = self.get_hash() {
-            hash = self_hash.clone();
+        block.serialize_field("algorithm_proof", &self.get_algorithm_proof()).ok();
+        block.serialize_field("hash", "").ok();
+        block.serialize_field("index", &self.get_index()).ok();
+        block.serialize_field("previous_block_hash", "").ok();
+        block.serialize_field("transactions", &self.get_transactions()).ok();
+
+        if let Some(hash) = self.get_hash() {
+            block.serialize_field("hash", &hash).ok();
         }
 
-        if let Some(self_previous_block_hash) = self.get_previous_block_hash() {
-            previous_block_hash = self_previous_block_hash.clone();
+        if let Some(previous_block_hash) = self.get_previous_block_hash() {
+            block.serialize_field("previous_block_hash", &previous_block_hash).ok();
         }
 
-        block["hash"] = hash.into();
-        block["index"] = self.get_index().into();
-        block["transactions"] = JsonValue::new_array();
-        block["algorithm_proof"] = self.get_algorithm_proof().into();
-        block["previous_block_hash"] = previous_block_hash.into();
-
-        for transaction in self.get_transactions() {
-            block["transactions"].push(transaction.to_json_value()).ok();
-        }
-
-        block
+        block.end()
     }
 }
