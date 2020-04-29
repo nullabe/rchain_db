@@ -29,4 +29,3 @@ pub mod test_serializer_block {
         );
     }
 }
-

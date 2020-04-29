@@ -1,11 +1,14 @@
 pub struct ErrorResponse {
     message: String,
-    status_code: u16
+    status_code: u16,
 }
 
 impl ErrorResponse {
     pub fn new(message: String, status_code: u16) -> Self {
-        ErrorResponse { message, status_code }
+        ErrorResponse {
+            message,
+            status_code,
+        }
     }
 
     pub fn get_message(&self) -> &str {
