@@ -1,5 +1,6 @@
-use crate::hasher::ValidatorHasher;
 use std::ops::Add;
+
+use crate::crypto::Validator;
 
 #[derive(Debug, Default)]
 pub struct ProofOfWork {

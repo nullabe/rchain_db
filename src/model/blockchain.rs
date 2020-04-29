@@ -67,6 +67,14 @@ impl Blockchain {
         self.blocks.last()
     }
 
+    pub fn get_blocks(&self) -> Vec<Block> {
+        self.blocks.clone()
+    }
+
+    pub fn get_transactions_to_process(&self) -> Vec<Transaction> {
+        self.transactions_to_process.clone()
+    }
+
     fn next_block_index(&self) -> usize {
         self.blocks.len()
     }
