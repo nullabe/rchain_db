@@ -8,10 +8,9 @@ use crate::model::transaction::Transaction;
 impl Node {
     pub fn register_routing(&mut self) {
         self.get_blockchain();
+        self.get_transactions_to_process();
 
         self.post_blocks();
-
-        self.get_transactions_to_process();
         self.post_transactions();
     }
 
@@ -29,9 +28,26 @@ impl Node {
         self.get_server()
             .at("/blocks")
             .post(|request: Request<BlockchainState>| async move {
-                let blockchain = request.state().get_blockchain().lock().unwrap();
+                let mut blockchain = request.state().get_blockchain().lock().unwrap();
 
-                Response::new(200).body_json(&*blockchain).unwrap()
+                if blockchain.get_transactions_to_process().is_empty() {
+                    return ErrorResponse::new("No new transactions to process".to_string(), 400)
+                        .to_json_response()
+                        .unwrap();
+                }
+
+                if let Err(err) = blockchain.add_new_block() {
+                    return ErrorResponse::new(
+                        format!("Error during mining block: {}", err.to_string()),
+                        400,
+                    )
+                    .to_json_response()
+                    .unwrap();
+                }
+
+                Response::new(200)
+                    .body_json(blockchain.get_blocks().last().unwrap())
+                    .unwrap()
             });
     }
 
