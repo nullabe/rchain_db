@@ -1,5 +1,6 @@
 use std::borrow::BorrowMut;
 use std::io::Error;
+use std::sync::{Arc, Mutex};
 
 use tide::Server;
 
@@ -12,7 +13,9 @@ pub struct Node {
 
 impl Node {
     pub async fn run(host: &str, port: &str) -> Result<(), Error> {
-        let blockchain_state = BlockchainState::from(Blockchain::new());
+        let blockchain = Arc::new(Mutex::new(Blockchain::new()));
+
+        let blockchain_state = BlockchainState::from(blockchain);
 
         let server = tide::with_state(blockchain_state);
 
