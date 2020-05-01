@@ -3,7 +3,6 @@ use std::sync::{Arc, Mutex};
 
 use tide::Server;
 
-use crate::crypto::Hasher;
 use crate::error::node::UuidNodeError;
 use crate::http::state::BlockchainState;
 use crate::model::blockchain::Blockchain;
@@ -13,25 +12,25 @@ impl Runner for Server<BlockchainState> {}
 
 impl Node<Server<BlockchainState>> {
     pub async fn run(host: &str, port: &str) -> Result<(), Box<dyn Error>> {
-        let blockchain = Arc::new(Mutex::new(Blockchain::new()));
+        let node_uuid = Self::generate_uuid_from_host_mac_address();
 
-        let blockchain_state = BlockchainState::from(blockchain);
-
-        let mut node: Node<Server<BlockchainState>> = Node::new(tide::with_state(blockchain_state));
-
-        let uuid = node.hash();
-
-        if uuid.is_none() {
+        if node_uuid.is_none() {
             return Err(Box::new(UuidNodeError::new(
                 "Node uuid is empty".to_string(),
             )));
         }
 
-        node.set_uuid(uuid);
+        let node_uuid = &node_uuid.unwrap();
 
-        node.register_routing();
+        let blockchain = Arc::new(Mutex::new(Blockchain::new()));
 
-        println!("Node (uuid: {}) created", node.get_uuid().unwrap());
+        let blockchain_state = BlockchainState::from(blockchain, node_uuid);
+
+        let mut node: Node<Server<BlockchainState>> = Node::new(tide::with_state(blockchain_state));
+
+        node.set_uuid(node_uuid).register_routing();
+
+        println!("Node (uuid: {}) created", node_uuid);
 
         node.server.listen(format!("{}:{}", host, port)).await?;
 
