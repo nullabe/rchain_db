@@ -1,6 +1,6 @@
 use std::error::Error;
 
-use rchain_db::http::node::Node;
+use rchain_db::model::node::Node;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {

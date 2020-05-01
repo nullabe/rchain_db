@@ -1,13 +1,13 @@
-use tide::{Request, Response};
+use tide::{Request, Response, Server};
 
 use crate::error::response::ErrorResponse;
-use crate::http::node::Node;
 use crate::http::state::BlockchainState;
+use crate::model::node::Node;
 use crate::model::transaction::Transaction;
 
-impl Node {
+impl Node<Server<BlockchainState>> {
     pub fn get_transactions_to_process(&mut self) -> &mut Self {
-        self.get_server().at("/transactions/to_process").get(
+        self.server.at("/transactions/to_process").get(
             |request: Request<BlockchainState>| async move {
                 let blockchain = request.state().get_blockchain().lock().unwrap();
                 let transactions_to_process = blockchain.get_transactions_to_process();
@@ -22,8 +22,9 @@ impl Node {
     }
 
     pub fn post_transactions(&mut self) -> &mut Self {
-        self.get_server().at("/transactions").post(
-            |mut request: Request<BlockchainState>| async move {
+        self.server
+            .at("/transactions")
+            .post(|mut request: Request<BlockchainState>| async move {
                 let request_data = request.body_json().await;
 
                 let mut blockchain = request.state().get_blockchain().lock().unwrap();
@@ -58,8 +59,7 @@ impl Node {
                 );
 
                 Response::new(200).body_json(&transaction).unwrap()
-            },
-        );
+            });
 
         self
     }
