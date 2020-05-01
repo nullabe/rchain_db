@@ -1,4 +1,5 @@
 pub mod block;
+pub mod node;
 pub mod proof_of_work;
 
 pub trait Hasher {
