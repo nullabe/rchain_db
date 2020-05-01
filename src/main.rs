@@ -1,5 +1,6 @@
-use rchain_db::http_api::node::Node;
 use std::error::Error;
+
+use rchain_db::http::node::Node;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {

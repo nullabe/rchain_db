@@ -1,5 +1,6 @@
-use crate::model::blockchain::Blockchain;
 use std::sync::{Arc, Mutex};
+
+use crate::model::blockchain::Blockchain;
 
 pub struct BlockchainState {
     blockchain: Arc<Mutex<Blockchain>>,

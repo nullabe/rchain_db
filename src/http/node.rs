@@ -4,7 +4,7 @@ use std::sync::{Arc, Mutex};
 
 use tide::Server;
 
-use crate::http_api::state::BlockchainState;
+use crate::http::state::BlockchainState;
 use crate::model::blockchain::Blockchain;
 
 pub struct Node {
