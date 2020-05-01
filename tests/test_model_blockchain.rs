@@ -30,7 +30,7 @@ pub mod test_db_blockchain {
 
         match blockchain.add_new_block() {
             Err(err) => {
-                return Err(err.message().clone());
+                return Err(err.get_message().clone());
             }
 
             _ => (),
@@ -49,7 +49,7 @@ pub mod test_db_blockchain {
 
         match blockchain.add_new_block() {
             Err(err) => {
-                return Err(err.message().clone());
+                return Err(err.get_message().clone());
             }
 
             _ => (),
@@ -65,7 +65,7 @@ pub mod test_db_blockchain {
 
         match blockchain.add_new_block() {
             Err(err) => {
-                return Err(err.message().clone());
+                return Err(err.get_message().clone());
             }
 
             _ => (),

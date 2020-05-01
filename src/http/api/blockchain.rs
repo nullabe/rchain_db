@@ -1,11 +1,11 @@
-use tide::{Request, Response};
+use tide::{Request, Response, Server};
 
-use crate::http::node::Node;
 use crate::http::state::BlockchainState;
+use crate::model::node::Node;
 
-impl Node {
+impl Node<Server<BlockchainState>> {
     pub fn get_blockchain(&mut self) -> &mut Self {
-        self.get_server()
+        self.server
             .at("/blockchain")
             .get(|request: Request<BlockchainState>| async move {
                 let blockchain = request.state().get_blockchain().lock().unwrap();

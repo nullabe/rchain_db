@@ -1,11 +1,13 @@
+use crypto::digest::Digest;
 use crypto::sha2::Sha256;
 use mac_address::get_mac_address;
+use tide::Server;
 
 use crate::crypto::Hasher;
-use crate::http::node::Node;
-use crypto::digest::Digest;
+use crate::http::state::BlockchainState;
+use crate::model::node::Node;
 
-impl Hasher for Node {
+impl Hasher for Node<Server<BlockchainState>> {
     fn hash(&mut self) -> Option<String> {
         let mut hasher = Sha256::new();
         let mac_address = get_mac_address();
