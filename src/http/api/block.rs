@@ -11,13 +11,7 @@ impl Node<Server<BlockchainState>> {
             .post(|request: Request<BlockchainState>| async move {
                 let mut blockchain = request.state().get_blockchain().lock().unwrap();
 
-                if blockchain.get_transactions_to_process().is_empty() {
-                    return ErrorResponse::new("No new transactions to process".to_string(), 400)
-                        .to_json_response()
-                        .unwrap();
-                }
-
-                if let Err(err) = blockchain.add_new_block() {
+                if let Err(err) = blockchain.add_new_block(request.state().get_node_uuid()) {
                     return ErrorResponse::new(
                         format!("Error during mining block: {}", err.to_string()),
                         400,

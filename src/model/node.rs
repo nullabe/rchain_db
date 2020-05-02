@@ -16,8 +16,8 @@ where
         self.uuid.as_ref()
     }
 
-    pub fn set_uuid(&mut self, uuid: Option<String>) -> &mut Self {
-        self.uuid = uuid;
+    pub fn set_uuid(&mut self, uuid: &str) -> &mut Self {
+        self.uuid = Some(uuid.to_string());
 
         self
     }

@@ -3,6 +3,9 @@ use crate::model::block::Block;
 use crate::model::proof_of_work::ProofOfWork;
 use crate::model::transaction::Transaction;
 
+const SELF_SENDER: &str = "0";
+const REWARD_AMOUNT: f64 = 1.0;
+
 #[derive(Debug, Default)]
 pub struct Blockchain {
     blocks: Vec<Block>,
@@ -23,7 +26,7 @@ impl Blockchain {
         }
     }
 
-    pub fn add_new_block(&mut self) -> Result<(), AddBlockToBlockchainError> {
+    pub fn add_new_block(&mut self, node_uuid: &str) -> Result<(), AddBlockToBlockchainError> {
         let mut previous_block_hash: Option<String> = None;
         let mut algorithm_proof = 0;
 
@@ -50,7 +53,14 @@ impl Blockchain {
 
         self.blocks.push(block);
 
+        let reward_transaction = Transaction::new(
+            self::SELF_SENDER.to_string(),
+            node_uuid.to_string(),
+            self::REWARD_AMOUNT,
+        );
+
         self.transactions_to_process = Vec::new();
+        self.transactions_to_process.push(reward_transaction);
 
         Ok(())
     }

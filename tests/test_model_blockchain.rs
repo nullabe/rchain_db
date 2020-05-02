@@ -28,7 +28,7 @@ pub mod test_db_blockchain {
     fn test_add_new_block() -> Result<(), String> {
         let mut blockchain = Blockchain::new();
 
-        match blockchain.add_new_block() {
+        match blockchain.add_new_block("test") {
             Err(err) => {
                 return Err(err.get_message().clone());
             }
@@ -47,7 +47,7 @@ pub mod test_db_blockchain {
     fn test_add_two_new_block() -> Result<(), String> {
         let mut blockchain = Blockchain::new();
 
-        match blockchain.add_new_block() {
+        match blockchain.add_new_block("test") {
             Err(err) => {
                 return Err(err.get_message().clone());
             }
@@ -63,7 +63,7 @@ pub mod test_db_blockchain {
             Some(_) => (),
         }
 
-        match blockchain.add_new_block() {
+        match blockchain.add_new_block("test") {
             Err(err) => {
                 return Err(err.get_message().clone());
             }
