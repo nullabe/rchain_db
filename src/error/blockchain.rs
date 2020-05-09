@@ -11,7 +11,7 @@ impl AddBlockToBlockchainError {
         Self { message }
     }
 
-    pub fn get_message(&self) -> &String {
+    pub fn message(&self) -> &String {
         &self.message
     }
 }

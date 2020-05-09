@@ -6,23 +6,23 @@ pub struct Transaction {
 }
 
 impl Transaction {
-    pub fn new(sender: String, receiver: String, amount: f64) -> Self {
+    pub fn new(sender: &str, receiver: &str, amount: f64) -> Self {
         Self {
-            sender,
-            receiver,
+            sender: sender.to_string(),
+            receiver: receiver.to_string(),
             amount,
         }
     }
 
-    pub fn get_sender(&self) -> String {
+    pub fn sender(&self) -> String {
         self.sender.clone()
     }
 
-    pub fn get_receiver(&self) -> String {
+    pub fn receiver(&self) -> String {
         self.receiver.clone()
     }
 
-    pub fn get_amount(&self) -> f64 {
+    pub fn amount(&self) -> f64 {
         self.amount
     }
 }

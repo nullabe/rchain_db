@@ -1,11 +1,9 @@
+use crate::crypto::block::Sha256BlockHasher;
+use crate::crypto::proof_of_work::Sha256ProofValidator;
+use crate::model::blockchain::Blockchain;
+
 pub mod block;
 pub mod node;
 pub mod proof_of_work;
 
-pub trait Hasher {
-    fn hash(&mut self) -> Option<String>;
-}
-
-pub trait Validator {
-    fn validate(&self, to_validate: &str, difficulty: &str) -> bool;
-}
+pub type Sha256Blockchain = Blockchain<Sha256ProofValidator, Sha256BlockHasher>;

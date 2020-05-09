@@ -2,15 +2,17 @@ use crypto::digest::Digest;
 use crypto::sha2::Sha256;
 use serde::Serialize;
 
-use crate::crypto::Hasher;
-use crate::model::block::Block;
+use crate::model::block::{Block, BlockHasher};
 use serde_json::value::Serializer;
 
-impl Hasher for Block {
-    fn hash(&mut self) -> Option<String> {
+#[derive(Clone)]
+pub struct Sha256BlockHasher;
+
+impl BlockHasher for Sha256BlockHasher {
+    fn hash(&self, block: &Block) -> Option<String> {
         let mut hasher = Sha256::new();
 
-        hasher.input_str(&self.serialize(Serializer).unwrap().to_string());
+        hasher.input_str(&block.serialize(Serializer).unwrap().to_string());
 
         Some(hasher.result_str())
     }

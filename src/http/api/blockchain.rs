@@ -8,7 +8,7 @@ impl Node<Server<BlockchainState>> {
         self.server
             .at("/blockchain")
             .get(|request: Request<BlockchainState>| async move {
-                let blockchain = request.state().get_blockchain().lock().unwrap();
+                let blockchain = request.state().blockchain().lock().unwrap();
 
                 Response::new(200).body_json(&*blockchain).unwrap()
             });

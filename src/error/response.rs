@@ -11,11 +11,11 @@ impl ErrorResponse {
         }
     }
 
-    pub fn get_message(&self) -> &str {
+    pub fn message(&self) -> &str {
         &self.message
     }
 
-    pub fn get_status_code(&self) -> u16 {
+    pub fn status_code(&self) -> u16 {
         self.status_code
     }
 }

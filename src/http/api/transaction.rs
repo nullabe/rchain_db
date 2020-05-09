@@ -9,8 +9,8 @@ impl Node<Server<BlockchainState>> {
     pub fn get_transactions_to_process(&mut self) -> &mut Self {
         self.server.at("/transactions/to_process").get(
             |request: Request<BlockchainState>| async move {
-                let blockchain = request.state().get_blockchain().lock().unwrap();
-                let transactions_to_process = blockchain.get_transactions_to_process();
+                let blockchain = request.state().blockchain().lock().unwrap();
+                let transactions_to_process = blockchain.transactions_to_process();
 
                 Response::new(200)
                     .body_json(&transactions_to_process)
@@ -27,7 +27,7 @@ impl Node<Server<BlockchainState>> {
             .post(|mut request: Request<BlockchainState>| async move {
                 let request_data = request.body_json().await;
 
-                let mut blockchain = request.state().get_blockchain().lock().unwrap();
+                let mut blockchain = request.state().blockchain().lock().unwrap();
 
                 if let Err(err) = request_data {
                     return ErrorResponse::new(
@@ -53,9 +53,9 @@ impl Node<Server<BlockchainState>> {
                 let transaction = transaction_request.unwrap();
 
                 blockchain.add_new_transaction(
-                    transaction.get_sender(),
-                    transaction.get_receiver(),
-                    transaction.get_amount(),
+                    &transaction.sender(),
+                    &transaction.receiver(),
+                    transaction.amount(),
                 );
 
                 Response::new(200).body_json(&transaction).unwrap()
