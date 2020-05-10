@@ -71,9 +71,9 @@ where
         );
 
         if block.hash().is_none() {
-            return Err(AddBlockToBlockchainError::new(String::from(
+            return Err(AddBlockToBlockchainError::new(
                 "Trying to add a block without a hash into blockchain",
-            )));
+            ));
         }
 
         self.blocks.push(block);

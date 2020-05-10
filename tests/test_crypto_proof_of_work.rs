@@ -7,6 +7,9 @@ pub mod test_crypto_proof_of_work {
     fn test_validate() {
         let proof_validator = Sha256ProofValidator;
 
-        assert_eq!(false, proof_validator.validate("toto", "c impossible que ça soit la fin"));
+        assert_eq!(
+            false,
+            proof_validator.validate("toto", "c impossible que ça soit la fin")
+        );
     }
 }

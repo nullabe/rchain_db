@@ -31,7 +31,7 @@ impl Node<Server<BlockchainState>> {
 
                 if let Err(err) = request_data {
                     return ErrorResponse::new(
-                        format!("Error during request body parsing: {}", err.to_string()),
+                        &format!("Error during request body parsing: {}", err.to_string()),
                         400,
                     )
                     .to_json_response()
@@ -43,7 +43,7 @@ impl Node<Server<BlockchainState>> {
 
                 if let Err(err) = transaction_request {
                     return ErrorResponse::new(
-                        format!("Error during serialization: {}", err.to_string()),
+                        &format!("Error during serialization: {}", err.to_string()),
                         400,
                     )
                     .to_json_response()

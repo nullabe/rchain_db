@@ -17,9 +17,7 @@ impl Node<Server<BlockchainState>> {
         let node_uuid = Self::generate_uuid_from_host_mac_address();
 
         if node_uuid.is_none() {
-            return Err(Box::new(UuidNodeError::new(
-                "Node uuid is empty".to_string(),
-            )));
+            return Err(Box::new(UuidNodeError::new("Node uuid is empty")));
         }
 
         let node_uuid = &node_uuid.unwrap();

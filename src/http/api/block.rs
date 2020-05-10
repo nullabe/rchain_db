@@ -13,7 +13,7 @@ impl Node<Server<BlockchainState>> {
 
                 if let Err(err) = blockchain.add_new_block(request.state().node_uuid()) {
                     return ErrorResponse::new(
-                        format!("Error during mining block: {}", err.to_string()),
+                        &format!("Error during mining block: {}", err.to_string()),
                         400,
                     )
                     .to_json_response()
