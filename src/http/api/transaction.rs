@@ -58,6 +58,8 @@ impl Node<Server<BlockchainState>> {
                     transaction.amount(),
                 );
 
+                request.state().persist_state();
+
                 Response::new(200).body_json(&transaction).unwrap()
             });
 
