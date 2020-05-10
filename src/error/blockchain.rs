@@ -7,8 +7,10 @@ pub struct AddBlockToBlockchainError {
 }
 
 impl AddBlockToBlockchainError {
-    pub fn new(message: String) -> Self {
-        Self { message }
+    pub fn new(message: &str) -> Self {
+        Self {
+            message: message.to_string(),
+        }
     }
 
     pub fn message(&self) -> &String {

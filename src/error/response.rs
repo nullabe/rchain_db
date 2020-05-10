@@ -4,9 +4,9 @@ pub struct ErrorResponse {
 }
 
 impl ErrorResponse {
-    pub fn new(message: String, status_code: u16) -> Self {
+    pub fn new(message: &str, status_code: u16) -> Self {
         ErrorResponse {
-            message,
+            message: message.to_string(),
             status_code,
         }
     }
