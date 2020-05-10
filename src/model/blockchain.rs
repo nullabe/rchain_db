@@ -22,7 +22,7 @@ where
     T: ProofValidator,
     U: BlockHasher + Clone,
 {
-    pub fn from_values(
+    pub fn from(
         blocks: Vec<Block>,
         transactions_to_process: Vec<Transaction>,
         proof_of_work: ProofOfWork<T>,

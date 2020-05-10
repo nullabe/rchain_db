@@ -89,7 +89,7 @@ impl<'de> Visitor<'de> for BlockchainVisitor {
         let transactions_to_process = transactions_to_process
             .ok_or_else(|| de::Error::missing_field("transactions_to_process"))?;
 
-        Ok(Blockchain::from_values(
+        Ok(Blockchain::from(
             blocks,
             transactions_to_process,
             ProofOfWork::new(PROOF_OF_WORK_DIFFICULTY, Sha256ProofValidator),
@@ -122,10 +122,11 @@ where
     {
         let mut blockchain = serializer.serialize_struct("Blockchain", self::FIELDS_COUNT)?;
 
-        blockchain
-            .serialize_field("count", &self.blocks().len())
-            .ok();
         blockchain.serialize_field("blocks", &self.blocks()).ok();
+
+        blockchain
+            .serialize_field("transactions_to_process", &self.transactions_to_process())
+            .ok();
 
         blockchain.end()
     }

@@ -1,11 +1,11 @@
 use std::fmt;
 
 use serde::de::{self, MapAccess, Visitor};
+use serde::export::Formatter;
 use serde::ser::SerializeStruct;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 use crate::model::block::Block;
-use serde::export::Formatter;
 
 const FIELDS_COUNT: usize = 5;
 const FIELDS: [&str; FIELDS_COUNT] = [
@@ -126,7 +126,7 @@ impl<'de> Visitor<'de> for BlockVisitor {
         let previous_block_hash =
             previous_block_hash.ok_or_else(|| de::Error::missing_field("previous_block_hash"))?;
 
-        Ok(Block::from_values(
+        Ok(Block::from(
             hash,
             index,
             transactions,

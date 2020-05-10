@@ -1,11 +1,12 @@
 #[cfg(test)]
 pub mod test_serializer_block {
+    use std::borrow::Cow;
+
     use serde::Serialize;
     use serde_json::value::Serializer;
 
     use rchain_db::model::block::{Block, BlockHasher};
     use rchain_db::model::transaction::Transaction;
-    use std::borrow::Cow;
 
     #[test]
     fn test_serialize() {

@@ -12,7 +12,7 @@ pub struct Block {
 }
 
 impl Block {
-    pub fn from_values(
+    pub fn from(
         hash: Option<String>,
         index: usize,
         transactions: Vec<Transaction>,

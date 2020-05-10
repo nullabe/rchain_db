@@ -1,8 +1,9 @@
 #[cfg(test)]
 pub mod test_model_block {
+    use std::borrow::Cow;
+
     use rchain_db::model::block::{Block, BlockHasher};
     use rchain_db::model::transaction::Transaction;
-    use std::borrow::Cow;
 
     #[test]
     fn test_get_hash() {

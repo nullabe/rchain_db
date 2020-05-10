@@ -17,7 +17,7 @@ pub mod test_serializer_blockchain {
         blockchain.add_new_block("test").ok();
 
         assert_eq!(
-            String::from("{\"blocks\":[{\"algorithm_proof\":0,\"hash\":\"9a2b892c228648282c915af64b3eb85b34d40853ec1c11b07968e370b2f23bc3\",\"index\":0,\"previous_block_hash\":\"\",\"transactions\":[{\"amount\":66.6,\"receiver\":\"r1\",\"sender\":\"s1\"}]}],\"count\":1}"),
+            String::from("{\"blocks\":[{\"algorithm_proof\":0,\"hash\":\"9a2b892c228648282c915af64b3eb85b34d40853ec1c11b07968e370b2f23bc3\",\"index\":0,\"previous_block_hash\":\"\",\"transactions\":[{\"amount\":66.6,\"receiver\":\"r1\",\"sender\":\"s1\"}]}],\"transactions_to_process\":[{\"amount\":1.0,\"receiver\":\"test\",\"sender\":\"0\"}]}"),
             blockchain.serialize(Serializer).unwrap().to_string()
         );
     }
