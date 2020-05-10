@@ -5,7 +5,7 @@ use crate::model::block::{Block, BlockHasher};
 use crate::model::proof_of_work::{ProofOfWork, ProofValidator};
 use crate::model::transaction::Transaction;
 
-const PROOF_OF_WORK_DIFFICULTY: &str = "000";
+pub const PROOF_OF_WORK_DIFFICULTY: &str = "000";
 const SELF_SENDER: &str = "0";
 const REWARD_AMOUNT: f64 = 1.0;
 
@@ -22,6 +22,20 @@ where
     T: ProofValidator,
     U: BlockHasher + Clone,
 {
+    pub fn from_values(
+        blocks: Vec<Block>,
+        transactions_to_process: Vec<Transaction>,
+        proof_of_work: ProofOfWork<T>,
+        block_hasher: U,
+    ) -> Self {
+        Self {
+            blocks,
+            transactions_to_process,
+            proof_of_work,
+            block_hasher,
+        }
+    }
+
     pub fn new(proof_validator: T, block_hasher: U) -> Self {
         let blocks: Vec<Block> = Vec::new();
 
