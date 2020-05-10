@@ -9,9 +9,9 @@ impl Node<Server<BlockchainState>> {
         self.server
             .at("/blocks")
             .post(|request: Request<BlockchainState>| async move {
-                let mut blockchain = request.state().get_blockchain().lock().unwrap();
+                let mut blockchain = request.state().blockchain().lock().unwrap();
 
-                if let Err(err) = blockchain.add_new_block(request.state().get_node_uuid()) {
+                if let Err(err) = blockchain.add_new_block(request.state().node_uuid()) {
                     return ErrorResponse::new(
                         format!("Error during mining block: {}", err.to_string()),
                         400,
@@ -21,7 +21,7 @@ impl Node<Server<BlockchainState>> {
                 }
 
                 Response::new(200)
-                    .body_json(blockchain.get_blocks().last().unwrap())
+                    .body_json(blockchain.last_block().unwrap())
                     .unwrap()
             });
 

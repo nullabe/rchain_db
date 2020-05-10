@@ -14,10 +14,10 @@ impl Serialize for ErrorResponse {
             serializer.serialize_struct("ErrorResponse", self::FIELDS_COUNT)?;
 
         error_response
-            .serialize_field("message", self.get_message())
+            .serialize_field("message", self.message())
             .ok();
         error_response
-            .serialize_field("status_code", &self.get_status_code())
+            .serialize_field("status_code", &self.status_code())
             .ok();
 
         error_response.end()

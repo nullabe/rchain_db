@@ -1,21 +1,26 @@
 use std::ops::Add;
 
-use crate::crypto::Validator;
-
 #[derive(Debug, Default)]
-pub struct ProofOfWork {
+pub struct ProofOfWork<T> {
     difficulty: String,
+    proof_validator: T,
 }
 
-impl ProofOfWork {
-    pub fn new(difficulty: String) -> Self {
-        ProofOfWork { difficulty }
+impl<T> ProofOfWork<T>
+where
+    T: ProofValidator,
+{
+    pub fn new(difficulty: &str, proof_validator: T) -> Self {
+        ProofOfWork {
+            difficulty: difficulty.to_string(),
+            proof_validator,
+        }
     }
 
     pub fn generate(&self, last_algorithm_proof: i64) -> i64 {
         let mut proposed_algorithm_proof: i64 = 0;
 
-        while !self.validate(
+        while !self.proof_validator.validate(
             &self.to_validate(
                 &last_algorithm_proof.to_string(),
                 &proposed_algorithm_proof.to_string(),
@@ -36,4 +41,8 @@ impl ProofOfWork {
 
         to_validate
     }
+}
+
+pub trait ProofValidator {
+    fn validate(&self, to_validate: &str, difficulty: &str) -> bool;
 }

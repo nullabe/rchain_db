@@ -115,15 +115,11 @@ impl Serialize for Transaction {
     {
         let mut transaction = serializer.serialize_struct("Transaction", self::FIELDS_COUNT)?;
 
+        transaction.serialize_field("amount", &self.amount()).ok();
         transaction
-            .serialize_field("amount", &self.get_amount())
+            .serialize_field("receiver", &self.receiver())
             .ok();
-        transaction
-            .serialize_field("receiver", &self.get_receiver())
-            .ok();
-        transaction
-            .serialize_field("sender", &self.get_sender())
-            .ok();
+        transaction.serialize_field("sender", &self.sender()).ok();
 
         transaction.end()
     }

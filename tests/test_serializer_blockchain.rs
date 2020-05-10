@@ -3,18 +3,37 @@ pub mod test_serializer_blockchain {
     use serde::Serialize;
     use serde_json::value::Serializer;
 
+    use rchain_db::model::block::{Block, BlockHasher};
     use rchain_db::model::blockchain::Blockchain;
+    use rchain_db::model::proof_of_work::ProofValidator;
 
     #[test]
     fn test_serialize() {
-        let mut blockchain = Blockchain::new();
+        let mut blockchain = Blockchain::new(ProofValidatorMock, BlockHasherMock);
 
-        blockchain.add_new_transaction(String::from("s1"), String::from("r1"), 66.6);
+        blockchain.add_new_transaction("s1", "r1", 66.6);
         blockchain.add_new_block("test").ok();
 
         assert_eq!(
-            String::from("{\"blocks\":[{\"algorithm_proof\":0,\"hash\":\"e5fd528412f1210a2baf296a849ba880ee212a49a3f6275d8446afef6c2c1f48\",\"index\":0,\"previous_block_hash\":\"\",\"transactions\":[{\"amount\":66.6,\"receiver\":\"r1\",\"sender\":\"s1\"}]}],\"count\":1}"),
+            String::from("{\"blocks\":[{\"algorithm_proof\":0,\"hash\":\"9a2b892c228648282c915af64b3eb85b34d40853ec1c11b07968e370b2f23bc3\",\"index\":0,\"previous_block_hash\":\"\",\"transactions\":[{\"amount\":66.6,\"receiver\":\"r1\",\"sender\":\"s1\"}]}],\"count\":1}"),
             blockchain.serialize(Serializer).unwrap().to_string()
         );
+    }
+
+    struct ProofValidatorMock;
+
+    impl ProofValidator for ProofValidatorMock {
+        fn validate(&self, _to_validate: &str, _difficulty: &str) -> bool {
+            true
+        }
+    }
+
+    #[derive(Clone)]
+    struct BlockHasherMock;
+
+    impl BlockHasher for BlockHasherMock {
+        fn hash(&self, _block: &Block) -> Option<String> {
+            Some("9a2b892c228648282c915af64b3eb85b34d40853ec1c11b07968e370b2f23bc3".to_string())
+        }
     }
 }

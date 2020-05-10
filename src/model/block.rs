@@ -1,4 +1,5 @@
-use crate::crypto::Hasher;
+use std::borrow::Cow;
+
 use crate::model::transaction::Transaction;
 
 #[derive(Debug, Clone)]
@@ -11,11 +12,12 @@ pub struct Block {
 }
 
 impl Block {
-    pub fn new(
+    pub fn new<T: BlockHasher + Clone>(
         index: usize,
         transactions: Vec<Transaction>,
         algorithm_proof: i64,
         previous_block_hash: Option<String>,
+        block_hasher: Cow<T>,
     ) -> Self {
         let mut block = Self {
             hash: None,
@@ -25,28 +27,32 @@ impl Block {
             previous_block_hash,
         };
 
-        block.hash = block.hash();
+        block.hash = block_hasher.hash(&block);
 
         block
     }
 
-    pub fn get_hash(&self) -> Option<&String> {
+    pub fn hash(&self) -> Option<&String> {
         self.hash.as_ref()
     }
 
-    pub fn get_index(&self) -> usize {
+    pub fn index(&self) -> usize {
         self.index
     }
 
-    pub fn get_transactions(&self) -> Vec<Transaction> {
+    pub fn transactions(&self) -> Vec<Transaction> {
         self.transactions.to_vec()
     }
 
-    pub fn get_algorithm_proof(&self) -> i64 {
+    pub fn algorithm_proof(&self) -> i64 {
         self.algorithm_proof
     }
 
-    pub fn get_previous_block_hash(&self) -> Option<&String> {
+    pub fn previous_block_hash(&self) -> Option<&String> {
         self.previous_block_hash.as_ref()
     }
+}
+
+pub trait BlockHasher {
+    fn hash(&self, block: &Block) -> Option<String>;
 }

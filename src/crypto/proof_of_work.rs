@@ -1,10 +1,11 @@
 use crypto::digest::Digest;
 use crypto::sha2::Sha256;
 
-use crate::crypto::Validator;
-use crate::model::proof_of_work::ProofOfWork;
+use crate::model::proof_of_work::ProofValidator;
 
-impl Validator for ProofOfWork {
+pub struct Sha256ProofValidator;
+
+impl ProofValidator for Sha256ProofValidator {
     fn validate(&self, to_validate: &str, difficulty: &str) -> bool {
         let mut hasher = Sha256::new();
 
