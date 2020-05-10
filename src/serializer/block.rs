@@ -8,7 +8,7 @@ use crate::model::block::Block;
 use serde::export::Formatter;
 
 const FIELDS_COUNT: usize = 5;
-const FIELDS: [&str; 5] = [
+const FIELDS: [&str; FIELDS_COUNT] = [
     "hash",
     "index",
     "transactions",
