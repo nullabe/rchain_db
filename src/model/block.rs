@@ -12,6 +12,22 @@ pub struct Block {
 }
 
 impl Block {
+    pub fn from_values(
+        hash: Option<String>,
+        index: usize,
+        transactions: Vec<Transaction>,
+        algorithm_proof: i64,
+        previous_block_hash: Option<String>,
+    ) -> Self {
+        Block {
+            hash,
+            index,
+            transactions,
+            algorithm_proof,
+            previous_block_hash,
+        }
+    }
+
     pub fn new<T: BlockHasher + Clone>(
         index: usize,
         transactions: Vec<Transaction>,

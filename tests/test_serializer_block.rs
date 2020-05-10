@@ -28,6 +28,22 @@ pub mod test_serializer_block {
         );
     }
 
+    #[test]
+    fn test_deserialize() {
+        let block: Block =
+            serde_json::from_str("{\"algorithm_proof\":90838340972,\"hash\":\"9a2b892c228648282c915af64b3eb85b34d40853ec1c11b07968e370b2f23bc3\",\"index\":6,\"previous_block_hash\":\"previous\",\"transactions\":[{\"amount\":66.6,\"receiver\":\"r1\",\"sender\":\"s1\"},{\"amount\":42.42,\"receiver\":\"r2\",\"sender\":\"s2\"}]}")
+                .unwrap();
+
+        assert_eq!(2, block.transactions().len());
+        assert_eq!(6, block.index());
+        assert_eq!(90838340972, block.algorithm_proof());
+        assert_eq!("previous", block.previous_block_hash().unwrap());
+        assert_eq!(
+            "9a2b892c228648282c915af64b3eb85b34d40853ec1c11b07968e370b2f23bc3",
+            block.hash().unwrap()
+        );
+    }
+
     #[derive(Clone)]
     struct BlockHasherMock;
 
