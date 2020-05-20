@@ -1,9 +1,10 @@
+use std::sync::{Arc, Mutex};
+
 use crate::crypto::block::Sha256BlockHasher;
 use crate::crypto::proof_of_work::Sha256ProofValidator;
 use crate::crypto::Sha256Blockchain;
 use crate::model::blockchain::Blockchain;
 use crate::storage::BlockchainStorage;
-use std::sync::{Arc, Mutex};
 
 pub struct BlockchainFileStorage;
 
