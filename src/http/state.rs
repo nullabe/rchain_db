@@ -1,8 +1,8 @@
 use std::sync::{Arc, Mutex};
 
 use crate::crypto::Sha256Blockchain;
-use crate::storage::blockchain::BlockchainStorage;
 use crate::storage::file::blockchain::BlockchainFileStorage;
+use crate::storage::BlockchainStorage;
 
 pub struct BlockchainState {
     blockchain: Arc<Mutex<Sha256Blockchain>>,
@@ -31,7 +31,6 @@ impl BlockchainState {
     }
 
     pub fn persist_state(&self) {
-        self.blockchain_storage
-            .persist(self.blockchain.lock().unwrap());
+        self.blockchain_storage.persist(self.blockchain());
     }
 }
