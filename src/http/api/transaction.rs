@@ -25,7 +25,7 @@ impl Node<Server<BlockchainState>> {
         self.server
             .at("/transactions")
             .post(|mut request: Request<BlockchainState>| async move {
-                let request_data = request.body_json().await;
+                let request_data = request.body_string().await;
 
                 let mut blockchain = request.state().blockchain().lock().unwrap();
 
@@ -39,7 +39,7 @@ impl Node<Server<BlockchainState>> {
                 }
 
                 let transaction_request: serde_json::Result<Transaction> =
-                    serde_json::from_value(request_data.unwrap());
+                    serde_json::from_str(&request_data.unwrap());
 
                 if let Err(err) = transaction_request {
                     return ErrorResponse::new(
@@ -57,6 +57,8 @@ impl Node<Server<BlockchainState>> {
                     &transaction.receiver(),
                     transaction.amount(),
                 );
+
+                request.state().persist_state(&blockchain);
 
                 Response::new(200).body_json(&transaction).unwrap()
             });

@@ -20,6 +20,8 @@ impl Node<Server<BlockchainState>> {
                     .unwrap();
                 }
 
+                request.state().persist_state(&blockchain);
+
                 Response::new(200)
                     .body_json(blockchain.last_block().unwrap())
                     .unwrap()

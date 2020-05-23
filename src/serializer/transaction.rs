@@ -91,9 +91,9 @@ impl<'de> Visitor<'de> for TransactionVisitor {
             }
         }
 
-        let amount = amount.ok_or_else(|| de::Error::missing_field("amont"))?;
-        let receiver = receiver.ok_or_else(|| de::Error::missing_field("receiver"))?;
-        let sender = sender.ok_or_else(|| de::Error::missing_field("sender"))?;
+        let amount: f64 = amount.ok_or_else(|| de::Error::missing_field("amont"))?;
+        let receiver: &str = receiver.ok_or_else(|| de::Error::missing_field("receiver"))?;
+        let sender: &str = sender.ok_or_else(|| de::Error::missing_field("sender"))?;
 
         Ok(Transaction::new(sender, receiver, amount))
     }
