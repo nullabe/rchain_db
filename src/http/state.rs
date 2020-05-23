@@ -30,7 +30,7 @@ impl BlockchainState {
         &self.node_uuid
     }
 
-    pub fn persist_state(&self) {
-        self.blockchain_storage.persist(self.blockchain());
+    pub fn persist_state(&self, blockchain: &Sha256Blockchain) {
+        self.blockchain_storage.persist(&blockchain);
     }
 }
