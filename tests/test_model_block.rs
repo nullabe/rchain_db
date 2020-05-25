@@ -47,6 +47,13 @@ pub mod test_model_block {
         assert_eq!("hey", block.previous_block_hash().unwrap());
     }
 
+    #[test]
+    fn test_get_timestamp() {
+        let block = get_new_block();
+
+        assert_eq!(true, block.timestamp().is_sign_positive());
+    }
+
     fn get_new_block() -> Block {
         Block::new::<BlockHasherMock>(
             2,

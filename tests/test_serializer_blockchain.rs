@@ -16,15 +16,31 @@ pub mod test_serializer_blockchain {
         blockchain.add_new_transaction("s1", "r1", 66.6);
         blockchain.add_new_block("test").ok();
 
+        let serialized_blockchain = blockchain.serialize(Serializer).unwrap().to_owned();
+
         assert_eq!(
-            String::from("{\"blocks\":[{\"algorithm_proof\":0,\"hash\":\"9a2b892c228648282c915af64b3eb85b34d40853ec1c11b07968e370b2f23bc3\",\"index\":0,\"previous_block_hash\":\"\",\"transactions\":[{\"amount\":66.6,\"receiver\":\"r1\",\"sender\":\"s1\"}]}],\"transactions_to_process\":[{\"amount\":1.0,\"receiver\":\"test\",\"sender\":\"0\"}]}"),
-            blockchain.serialize(Serializer).unwrap().to_string()
+            1,
+            serialized_blockchain
+                .get("blocks")
+                .unwrap()
+                .as_array()
+                .unwrap()
+                .len()
+        );
+        assert_eq!(
+            1,
+            serialized_blockchain
+                .get("transactions_to_process")
+                .unwrap()
+                .as_array()
+                .unwrap()
+                .len()
         );
     }
 
     #[test]
     fn test_deserialize() {
-        let blockchain: Blockchain<Sha256ProofValidator, Sha256BlockHasher> = serde_json::from_str("{\"blocks\":[{\"algorithm_proof\":0,\"hash\":\"9a2b892c228648282c915af64b3eb85b34d40853ec1c11b07968e370b2f23bc3\",\"index\":0,\"previous_block_hash\":\"\",\"transactions\":[{\"amount\":66.6,\"receiver\":\"r1\",\"sender\":\"s1\"}]}],\"transactions_to_process\":[{\"amount\":66.6,\"receiver\":\"r1\",\"sender\":\"s1\"}]}").unwrap();
+        let blockchain: Blockchain<Sha256ProofValidator, Sha256BlockHasher> = serde_json::from_str("{\"blocks\":[{\"timestamp\":55.543,\"algorithm_proof\":0,\"hash\":\"9a2b892c228648282c915af64b3eb85b34d40853ec1c11b07968e370b2f23bc3\",\"index\":0,\"previous_block_hash\":\"\",\"transactions\":[{\"amount\":66.6,\"receiver\":\"r1\",\"sender\":\"s1\"}]}],\"transactions_to_process\":[{\"amount\":66.6,\"receiver\":\"r1\",\"sender\":\"s1\"}]}").unwrap();
 
         assert_eq!(1, blockchain.blocks().len());
         assert_eq!(1, blockchain.transactions_to_process().len());

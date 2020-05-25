@@ -22,6 +22,7 @@ enum BlockField {
     Transactions,
     AlgorithmProof,
     PreviousBlockHash,
+    Timestamp,
 }
 
 struct BlockFieldVisitor;
@@ -33,7 +34,7 @@ impl<'de> Visitor<'de> for BlockFieldVisitor {
 
     fn expecting(&self, formatter: &mut Formatter) -> fmt::Result {
         formatter
-            .write_str("'hash', 'index', 'transactions', 'algorithm_proof', 'previous_block_hash'")
+            .write_str("'hash', 'index', 'transactions', 'algorithm_proof', 'previous_block_hash', 'timestamp'")
     }
 
     fn visit_str<E>(self, value: &str) -> Result<Self::Value, E>
@@ -46,6 +47,7 @@ impl<'de> Visitor<'de> for BlockFieldVisitor {
             "transactions" => Ok(BlockField::Transactions),
             "algorithm_proof" => Ok(BlockField::AlgorithmProof),
             "previous_block_hash" => Ok(BlockField::PreviousBlockHash),
+            "timestamp" => Ok(BlockField::Timestamp),
 
             _ => Err(de::Error::unknown_field(value, &self::FIELDS)),
         }
@@ -77,6 +79,7 @@ impl<'de> Visitor<'de> for BlockVisitor {
         let mut transactions = None;
         let mut algorithm_proof = None;
         let mut previous_block_hash = None;
+        let mut timestamp = None;
 
         while let Some(key) = map.next_key()? {
             match key {
@@ -115,16 +118,29 @@ impl<'de> Visitor<'de> for BlockVisitor {
 
                     previous_block_hash = Some(map.next_value()?);
                 }
+                BlockField::Timestamp => {
+                    if timestamp.is_some() {
+                        return Err(de::Error::duplicate_field("timestamp"));
+                    }
+
+                    timestamp = Some(map.next_value()?);
+                }
             }
         }
 
         let hash = hash.ok_or_else(|| de::Error::missing_field("hash"))?;
+
         let index = index.ok_or_else(|| de::Error::missing_field("index"))?;
+
         let transactions = transactions.ok_or_else(|| de::Error::missing_field("transactions"))?;
+
         let algorithm_proof =
             algorithm_proof.ok_or_else(|| de::Error::missing_field("algorithm_proof"))?;
+
         let previous_block_hash =
             previous_block_hash.ok_or_else(|| de::Error::missing_field("previous_block_hash"))?;
+
+        let timestamp = timestamp.ok_or_else(|| de::Error::missing_field("timestamp"))?;
 
         Ok(Block::from(
             hash,
@@ -132,6 +148,7 @@ impl<'de> Visitor<'de> for BlockVisitor {
             transactions,
             algorithm_proof,
             previous_block_hash,
+            timestamp,
         ))
     }
 }
@@ -152,6 +169,16 @@ impl Serialize for Block {
     {
         let mut block = serializer.serialize_struct("Block", self::FIELDS_COUNT)?;
 
+        let hash = match self.hash() {
+            Some(hash) => hash,
+            None => "",
+        };
+
+        let previous_block_hash = match self.previous_block_hash() {
+            Some(previous_block_hash) => previous_block_hash,
+            None => "",
+        };
+
         block.serialize_field("index", &self.index()).ok();
 
         block
@@ -162,19 +189,13 @@ impl Serialize for Block {
             .serialize_field("transactions", &self.transactions())
             .ok();
 
-        if let Some(hash) = self.hash() {
-            block.serialize_field("hash", &hash).ok();
-        } else {
-            block.serialize_field("hash", "").ok();
-        }
+        block.serialize_field("hash", &hash).ok();
 
-        if let Some(previous_block_hash) = self.previous_block_hash() {
-            block
-                .serialize_field("previous_block_hash", &previous_block_hash)
-                .ok();
-        } else {
-            block.serialize_field("previous_block_hash", "").ok();
-        }
+        block
+            .serialize_field("previous_block_hash", &previous_block_hash)
+            .ok();
+
+        block.serialize_field("timestamp", &self.timestamp()).ok();
 
         block.end()
     }
