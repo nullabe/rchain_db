@@ -23,16 +23,53 @@ pub mod test_serializer_block {
             Cow::Owned(BlockHasherMock),
         );
 
+        let serialized_block = block.serialize(Serializer).unwrap().to_owned();
+
         assert_eq!(
-            String::from("{\"algorithm_proof\":90838340972,\"hash\":\"9a2b892c228648282c915af64b3eb85b34d40853ec1c11b07968e370b2f23bc3\",\"index\":6,\"previous_block_hash\":\"previous\",\"transactions\":[{\"amount\":66.6,\"receiver\":\"r1\",\"sender\":\"s1\"},{\"amount\":42.42,\"receiver\":\"r2\",\"sender\":\"s2\"}]}"),
-            block.serialize(Serializer).unwrap().to_string()
+            90838340972,
+            serialized_block
+                .get("algorithm_proof")
+                .unwrap()
+                .as_i64()
+                .unwrap()
+        );
+        assert_eq!(
+            "9a2b892c228648282c915af64b3eb85b34d40853ec1c11b07968e370b2f23bc3",
+            serialized_block.get("hash").unwrap().as_str().unwrap()
+        );
+        assert_eq!(6, serialized_block.get("index").unwrap().as_i64().unwrap());
+        assert_eq!(
+            "previous",
+            serialized_block
+                .get("previous_block_hash")
+                .unwrap()
+                .as_str()
+                .unwrap()
+        );
+        assert_eq!(
+            true,
+            serialized_block
+                .get("timestamp")
+                .unwrap()
+                .as_f64()
+                .unwrap()
+                .is_sign_positive()
+        );
+        assert_eq!(
+            2,
+            serialized_block
+                .get("transactions")
+                .unwrap()
+                .as_array()
+                .unwrap()
+                .len()
         );
     }
 
     #[test]
     fn test_deserialize() {
         let block: Block =
-            serde_json::from_str("{\"algorithm_proof\":90838340972,\"hash\":\"9a2b892c228648282c915af64b3eb85b34d40853ec1c11b07968e370b2f23bc3\",\"index\":6,\"previous_block_hash\":\"previous\",\"transactions\":[{\"amount\":66.6,\"receiver\":\"r1\",\"sender\":\"s1\"},{\"amount\":42.42,\"receiver\":\"r2\",\"sender\":\"s2\"}]}")
+            serde_json::from_str("{\"timestamp\":55.534,\"algorithm_proof\":90838340972,\"hash\":\"9a2b892c228648282c915af64b3eb85b34d40853ec1c11b07968e370b2f23bc3\",\"index\":6,\"previous_block_hash\":\"previous\",\"transactions\":[{\"amount\":66.6,\"receiver\":\"r1\",\"sender\":\"s1\"},{\"amount\":42.42,\"receiver\":\"r2\",\"sender\":\"s2\"}]}")
                 .unwrap();
 
         assert_eq!(2, block.transactions().len());
@@ -43,6 +80,7 @@ pub mod test_serializer_block {
             "9a2b892c228648282c915af64b3eb85b34d40853ec1c11b07968e370b2f23bc3",
             block.hash().unwrap()
         );
+        assert_eq!(55.534, block.timestamp());
     }
 
     #[derive(Clone)]
