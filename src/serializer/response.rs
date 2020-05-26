@@ -6,7 +6,7 @@ use crate::error::response::ErrorResponse;
 const FIELDS_COUNT: usize = 2;
 
 impl Serialize for ErrorResponse {
-    fn serialize<S>(&self, serializer: S) -> Result<<S as Serializer>::Ok, <S as Serializer>::Error>
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
     {

@@ -1,15 +1,14 @@
 use std::error::Error;
 
-use tide::Server;
-
 use crate::error::node::UuidNodeError;
 use crate::http::state::BlockchainState;
+use crate::http::BlockchainServer;
 use crate::model::node::{Node, Runner};
 use crate::storage::file::blockchain::BlockchainFileStorage;
 
-impl Runner for Server<BlockchainState> {}
+impl Runner for BlockchainServer {}
 
-impl Node<Server<BlockchainState>> {
+impl Node<BlockchainServer> {
     pub async fn run(host: &str, port: &str) -> Result<(), Box<dyn Error>> {
         let node_uuid = Self::generate_uuid_from_host_mac_address();
 
@@ -21,7 +20,7 @@ impl Node<Server<BlockchainState>> {
 
         let blockchain_state = BlockchainState::from(BlockchainFileStorage, node_uuid);
 
-        let mut node: Node<Server<BlockchainState>> = Node::new(tide::with_state(blockchain_state));
+        let mut node: Node<BlockchainServer> = Node::new(tide::with_state(blockchain_state));
 
         node.set_uuid(node_uuid).register_routes();
 

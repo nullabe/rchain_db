@@ -163,7 +163,7 @@ impl<'de> Deserialize<'de> for Block {
 }
 
 impl Serialize for Block {
-    fn serialize<S>(&self, serializer: S) -> Result<<S as Serializer>::Ok, <S as Serializer>::Error>
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
     {

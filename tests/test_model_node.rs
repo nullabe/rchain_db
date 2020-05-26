@@ -22,6 +22,17 @@ pub mod test_model_node {
         assert_eq!("hey", node.get_uuid().unwrap());
     }
 
+    #[test]
+    fn test_get_url() {
+        let mut node = Node::new(ServerMock {
+            name: "server".to_string(),
+        });
+
+        node.set_url("https://twitter.com/nullabe_music");
+
+        assert_eq!("https://twitter.com/nullabe_music", node.get_url().unwrap());
+    }
+
     struct ServerMock {
         pub name: String,
     }
