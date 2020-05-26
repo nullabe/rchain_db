@@ -1,12 +1,11 @@
 use crypto::digest::Digest;
 use crypto::sha2::Sha256;
 use mac_address::get_mac_address;
-use tide::Server;
 
-use crate::http::state::BlockchainState;
+use crate::http::BlockchainServer;
 use crate::model::node::Node;
 
-impl Node<Server<BlockchainState>> {
+impl Node<BlockchainServer> {
     pub fn generate_uuid_from_host_mac_address() -> Option<String> {
         let mut hasher = Sha256::new();
         let mac_address = get_mac_address();

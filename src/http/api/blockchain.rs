@@ -1,9 +1,10 @@
-use tide::{Request, Response, Server};
+use tide::{Request, Response};
 
 use crate::http::state::BlockchainState;
+use crate::http::BlockchainServer;
 use crate::model::node::Node;
 
-impl Node<Server<BlockchainState>> {
+impl Node<BlockchainServer> {
     pub fn get_blockchain(&mut self) -> &mut Self {
         self.server
             .at("/blockchain")

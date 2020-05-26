@@ -1,9 +1,7 @@
-use tide::Server;
-
-use crate::http::state::BlockchainState;
+use crate::http::BlockchainServer;
 use crate::model::node::Node;
 
-impl Node<Server<BlockchainState>> {
+impl Node<BlockchainServer> {
     pub fn register_routes(&mut self) {
         self.get_blockchain()
             .get_transactions_to_process()

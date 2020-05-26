@@ -4,6 +4,7 @@ use crate::error::blockchain::AddBlockToBlockchainError;
 use crate::model::block::{Block, BlockHasher};
 use crate::model::proof_of_work::{ProofOfWork, ProofValidator};
 use crate::model::transaction::Transaction;
+use crate::model::NeighbourhoodNodes;
 
 pub const PROOF_OF_WORK_DIFFICULTY: &str = "000";
 const SELF_SENDER: &str = "0";
@@ -13,6 +14,7 @@ const REWARD_AMOUNT: f64 = 1.0;
 pub struct Blockchain<T, U> {
     blocks: Vec<Block>,
     transactions_to_process: Vec<Transaction>,
+    registered_nodes: NeighbourhoodNodes,
     proof_of_work: ProofOfWork<T>,
     block_hasher: U,
 }
@@ -25,12 +27,14 @@ where
     pub fn from(
         blocks: Vec<Block>,
         transactions_to_process: Vec<Transaction>,
+        registered_nodes: NeighbourhoodNodes,
         proof_of_work: ProofOfWork<T>,
         block_hasher: U,
     ) -> Self {
         Self {
             blocks,
             transactions_to_process,
+            registered_nodes,
             proof_of_work,
             block_hasher,
         }
@@ -41,11 +45,14 @@ where
 
         let transactions_to_process: Vec<Transaction> = Vec::new();
 
+        let registered_nodes: NeighbourhoodNodes = Vec::new();
+
         let proof_of_work = ProofOfWork::new(self::PROOF_OF_WORK_DIFFICULTY, proof_validator);
 
         Self {
             blocks,
             transactions_to_process,
+            registered_nodes,
             proof_of_work,
             block_hasher,
         }
@@ -63,7 +70,7 @@ where
         }
 
         let block = Block::new(
-            self.next_block_index(),
+            self.blocks.len(),
             self.transactions_to_process.to_vec(),
             algorithm_proof,
             previous_block_hash,
@@ -94,11 +101,7 @@ where
 
         self.transactions_to_process.push(transaction);
 
-        self.next_block_index()
-    }
-
-    pub fn last_block(&self) -> Option<&Block> {
-        self.blocks.last()
+        self.blocks.len()
     }
 
     pub fn blocks(&self) -> Vec<Block> {
@@ -109,7 +112,11 @@ where
         self.transactions_to_process.clone()
     }
 
-    fn next_block_index(&self) -> usize {
-        self.blocks.len()
+    pub fn registered_nodes(&self) -> &NeighbourhoodNodes {
+        self.registered_nodes.as_ref()
+    }
+
+    pub fn last_block(&self) -> Option<&Block> {
+        self.blocks.last()
     }
 }

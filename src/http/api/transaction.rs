@@ -1,11 +1,12 @@
-use tide::{Request, Response, Server};
+use tide::{Request, Response};
 
 use crate::error::response::ErrorResponse;
 use crate::http::state::BlockchainState;
+use crate::http::BlockchainServer;
 use crate::model::node::Node;
 use crate::model::transaction::Transaction;
 
-impl Node<Server<BlockchainState>> {
+impl Node<BlockchainServer> {
     pub fn get_transactions_to_process(&mut self) -> &mut Self {
         self.server.at("/transactions/to_process").get(
             |request: Request<BlockchainState>| async move {

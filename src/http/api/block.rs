@@ -1,10 +1,11 @@
-use tide::{Request, Response, Server};
+use tide::{Request, Response};
 
 use crate::error::response::ErrorResponse;
 use crate::http::state::BlockchainState;
+use crate::http::BlockchainServer;
 use crate::model::node::Node;
 
-impl Node<Server<BlockchainState>> {
+impl Node<BlockchainServer> {
     pub fn post_blocks(&mut self) -> &mut Self {
         self.server
             .at("/blocks")
