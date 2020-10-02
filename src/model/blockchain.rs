@@ -1,7 +1,8 @@
 use std::borrow::Cow;
 
-use crate::error::blockchain::AddBlockToBlockchainError;
+use crate::error::blockchain::{AddBlockToBlockchainError, RegisterNodeToBlockchainError};
 use crate::model::block::{Block, BlockHasher};
+use crate::model::node::{NeighbourServer, Node};
 use crate::model::proof_of_work::{ProofOfWork, ProofValidator};
 use crate::model::transaction::Transaction;
 use crate::model::NeighbourhoodNodes;
@@ -58,7 +59,15 @@ where
         }
     }
 
-    pub fn add_new_block(&mut self, node_uuid: &str) -> Result<(), AddBlockToBlockchainError> {
+    pub fn blocks(&self) -> Vec<Block> {
+        self.blocks.clone()
+    }
+
+    pub fn last_block(&self) -> Option<&Block> {
+        self.blocks.last()
+    }
+
+    pub fn add_block(&mut self, node_uuid: &str) -> Result<(), AddBlockToBlockchainError> {
         let mut previous_block_hash: Option<String> = None;
 
         let mut algorithm_proof = 0;
@@ -66,7 +75,9 @@ where
         if let Some(last_block) = self.last_block() {
             previous_block_hash = last_block.hash().cloned();
 
-            algorithm_proof = self.proof_of_work.generate(last_block.algorithm_proof());
+            algorithm_proof = self
+                .proof_of_work
+                .generate_algorithm_proof(last_block.algorithm_proof());
         }
 
         let block = Block::new(
@@ -96,7 +107,16 @@ where
         Ok(())
     }
 
-    pub fn add_new_transaction(&mut self, sender: &str, receiver: &str, amount: f64) -> usize {
+    pub fn transactions_to_process(&self) -> Vec<Transaction> {
+        self.transactions_to_process.clone()
+    }
+
+    pub fn add_transactions_to_process(
+        &mut self,
+        sender: &str,
+        receiver: &str,
+        amount: f64,
+    ) -> usize {
         let transaction = Transaction::new(sender, receiver, amount);
 
         self.transactions_to_process.push(transaction);
@@ -104,19 +124,37 @@ where
         self.blocks.len()
     }
 
-    pub fn blocks(&self) -> Vec<Block> {
-        self.blocks.clone()
-    }
-
-    pub fn transactions_to_process(&self) -> Vec<Transaction> {
-        self.transactions_to_process.clone()
-    }
-
     pub fn registered_nodes(&self) -> &NeighbourhoodNodes {
         self.registered_nodes.as_ref()
     }
 
-    pub fn last_block(&self) -> Option<&Block> {
-        self.blocks.last()
+    pub fn add_registered_node(
+        &mut self,
+        uuid: &str,
+        url: &str,
+    ) -> Result<(), RegisterNodeToBlockchainError> {
+        let mut node = Node::new(NeighbourServer);
+
+        for node in &self.registered_nodes {
+            if uuid != node.uuid().unwrap_or(&String::from(""))
+                && url != node.url().unwrap_or(&String::from(""))
+            {
+                continue;
+            }
+
+            return Err(RegisterNodeToBlockchainError::new(
+                "Node already registered",
+            ));
+        }
+
+        node.set_uuid(uuid).set_url(url);
+
+        self.registered_nodes.push(node);
+
+        Ok(())
+    }
+
+    pub fn is_valid(&self) -> bool {
+        true
     }
 }

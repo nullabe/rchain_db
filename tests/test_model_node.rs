@@ -19,7 +19,7 @@ pub mod test_model_node {
 
         node.set_uuid("hey");
 
-        assert_eq!("hey", node.get_uuid().unwrap());
+        assert_eq!("hey", node.uuid().unwrap());
     }
 
     #[test]
@@ -30,7 +30,7 @@ pub mod test_model_node {
 
         node.set_url("https://twitter.com/nullabe_music");
 
-        assert_eq!("https://twitter.com/nullabe_music", node.get_url().unwrap());
+        assert_eq!("https://twitter.com/nullabe_music", node.url().unwrap());
     }
 
     struct ServerMock {

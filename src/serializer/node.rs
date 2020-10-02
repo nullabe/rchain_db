@@ -111,9 +111,9 @@ where
     {
         let mut node = serializer.serialize_struct("Node", self::FIELDS_COUNT)?;
 
-        node.serialize_field("uuid", &self.get_uuid()).ok();
+        node.serialize_field("uuid", &self.uuid()).ok();
 
-        node.serialize_field("url", &self.get_url()).ok();
+        node.serialize_field("url", &self.url()).ok();
 
         node.end()
     }

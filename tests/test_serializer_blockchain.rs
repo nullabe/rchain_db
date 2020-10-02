@@ -12,8 +12,8 @@ pub mod test_serializer_blockchain {
     fn test_serialize() {
         let mut blockchain = Blockchain::new(ProofValidatorMock, BlockHasherMock);
 
-        blockchain.add_new_transaction("s1", "r1", 66.6);
-        blockchain.add_new_block("test").ok();
+        blockchain.add_transactions_to_process("s1", "r1", 66.6);
+        blockchain.add_block("test").ok();
 
         let serialized_blockchain = blockchain.serialize(Serializer).unwrap().to_owned();
 

@@ -53,7 +53,7 @@ impl Node<BlockchainServer> {
 
                 let transaction = transaction_request.unwrap();
 
-                blockchain.add_new_transaction(
+                blockchain.add_transactions_to_process(
                     &transaction.sender(),
                     &transaction.receiver(),
                     transaction.amount(),

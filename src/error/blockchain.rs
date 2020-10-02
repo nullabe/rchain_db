@@ -25,3 +25,28 @@ impl fmt::Display for AddBlockToBlockchainError {
         write!(f, "{}", self.message)
     }
 }
+
+#[derive(Debug, Default)]
+pub struct RegisterNodeToBlockchainError {
+    message: String,
+}
+
+impl RegisterNodeToBlockchainError {
+    pub fn new(message: &str) -> Self {
+        Self {
+            message: message.to_string(),
+        }
+    }
+
+    pub fn message(&self) -> &String {
+        &self.message
+    }
+}
+
+impl Error for RegisterNodeToBlockchainError {}
+
+impl fmt::Display for RegisterNodeToBlockchainError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.message)
+    }
+}

@@ -27,8 +27,8 @@ pub mod test_serializer_node {
 
         assert_eq!(
             "https://twitter.com/nullabe_music",
-            serialized_node.get_url().unwrap()
+            serialized_node.url().unwrap()
         );
-        assert_eq!("huhu id", serialized_node.get_uuid().unwrap());
+        assert_eq!("huhu id", serialized_node.uuid().unwrap());
     }
 }

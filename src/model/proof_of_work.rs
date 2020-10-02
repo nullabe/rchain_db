@@ -1,5 +1,3 @@
-use std::ops::Add;
-
 #[derive(Debug, Default)]
 pub struct ProofOfWork<T> {
     difficulty: String,
@@ -17,7 +15,7 @@ where
         }
     }
 
-    pub fn generate(&self, last_algorithm_proof: i64) -> i64 {
+    pub fn generate_algorithm_proof(&self, last_algorithm_proof: i64) -> i64 {
         let mut proposed_algorithm_proof: i64 = 0;
 
         while !self.proof_validator.validate(
@@ -34,12 +32,7 @@ where
     }
 
     fn to_validate(&self, last_algorithm_proof: &str, proposed_algorithm_proof: &str) -> String {
-        let mut to_validate = String::new();
-
-        to_validate = to_validate.add(last_algorithm_proof);
-        to_validate = to_validate.add(proposed_algorithm_proof);
-
-        to_validate
+        last_algorithm_proof.to_string() + proposed_algorithm_proof
     }
 }
 

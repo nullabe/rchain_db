@@ -1,5 +1,8 @@
 pub trait Runner {}
 
+#[derive(Clone, Debug)]
+pub struct NeighbourServer;
+
 #[derive(Debug, Default)]
 pub struct Node<T> {
     uuid: Option<String>,
@@ -19,7 +22,7 @@ where
         }
     }
 
-    pub fn get_uuid(&self) -> Option<&String> {
+    pub fn uuid(&self) -> Option<&String> {
         self.uuid.as_ref()
     }
 
@@ -29,7 +32,7 @@ where
         self
     }
 
-    pub fn get_url(&self) -> Option<&String> {
+    pub fn url(&self) -> Option<&String> {
         self.url.as_ref()
     }
 
@@ -39,8 +42,5 @@ where
         self
     }
 }
-
-#[derive(Clone, Debug)]
-pub struct NeighbourServer;
 
 impl Runner for NeighbourServer {}
