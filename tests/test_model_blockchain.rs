@@ -19,7 +19,7 @@ pub mod test_model_blockchain {
     fn test_add_new_transaction_return_0() {
         let mut blockchain = Blockchain::new(ProofValidatorMock, BlockHasherMock);
 
-        let next_block_index = blockchain.add_new_transaction("sender", "receiver", 66.6);
+        let next_block_index = blockchain.add_transactions_to_process("sender", "receiver", 66.6);
 
         assert_eq!(0, next_block_index);
     }
@@ -28,7 +28,7 @@ pub mod test_model_blockchain {
     fn test_add_new_block() -> Result<(), String> {
         let mut blockchain = Blockchain::new(ProofValidatorMock, BlockHasherMock);
 
-        match blockchain.add_new_block("test") {
+        match blockchain.add_block("test") {
             Err(err) => {
                 return Err(err.message().clone());
             }
@@ -42,7 +42,7 @@ pub mod test_model_blockchain {
             None => return Err(String::from("There should be a block")),
         };
 
-        let next_block_index = blockchain.add_new_transaction("sender", "receiver", 66.6);
+        let next_block_index = blockchain.add_transactions_to_process("sender", "receiver", 66.6);
 
         assert_eq!(1, next_block_index);
 
@@ -53,7 +53,7 @@ pub mod test_model_blockchain {
     fn test_add_two_new_block() -> Result<(), String> {
         let mut blockchain = Blockchain::new(ProofValidatorMock, BlockHasherMock);
 
-        match blockchain.add_new_block("test") {
+        match blockchain.add_block("test") {
             Err(err) => {
                 return Err(err.message().clone());
             }
@@ -69,12 +69,16 @@ pub mod test_model_blockchain {
             Some(_) => (),
         }
 
-        match blockchain.add_new_block("test") {
+        match blockchain.add_block("test") {
             Err(err) => {
                 return Err(err.message().clone());
             }
 
             _ => (),
+        }
+
+        if !blockchain.is_valid() {
+            return Err(String::from("Blockchain should be valid"));
         }
 
         let last_block: &Block;
@@ -100,7 +104,7 @@ pub mod test_model_blockchain {
     fn test_add_new_block_reward_transaction() -> Result<(), String> {
         let mut blockchain = Blockchain::new(ProofValidatorMock, BlockHasherMock);
 
-        match blockchain.add_new_block("test") {
+        match blockchain.add_block("test") {
             Err(err) => {
                 return Err(err.message().clone());
             }
@@ -116,6 +120,31 @@ pub mod test_model_blockchain {
         assert_eq!("test", reward_transaction.receiver());
 
         Ok(())
+    }
+
+    #[test]
+    fn test_register_node() -> Result<(), String> {
+        let mut blockchain = Blockchain::new(ProofValidatorMock, BlockHasherMock);
+
+        match blockchain.add_neighbour_node("uuuuiiiiiddddd", "127.0.0.1:8080") {
+            Err(err) => {
+                return Err(err.message().clone());
+            }
+
+            Ok(_some) => (),
+        }
+
+        match blockchain.neighbour_nodes().first() {
+            Some(_node) => (),
+
+            None => return Err(String::from("No node found")),
+        }
+
+        match blockchain.add_neighbour_node("uuuuiiiiiddddd", "127.0.0.1:8080") {
+            Err(_err) => Ok(()),
+
+            Ok(_some) => Err(String::from("Registered node must be idempotent")),
+        }
     }
 
     struct ProofValidatorMock;

@@ -12,8 +12,8 @@ pub mod test_serializer_blockchain {
     fn test_serialize() {
         let mut blockchain = Blockchain::new(ProofValidatorMock, BlockHasherMock);
 
-        blockchain.add_new_transaction("s1", "r1", 66.6);
-        blockchain.add_new_block("test").ok();
+        blockchain.add_transactions_to_process("s1", "r1", 66.6);
+        blockchain.add_block("test").ok();
 
         let serialized_blockchain = blockchain.serialize(Serializer).unwrap().to_owned();
 
@@ -54,7 +54,7 @@ pub mod test_serializer_blockchain {
 
         assert_eq!(1, blockchain.blocks().len());
         assert_eq!(1, blockchain.transactions_to_process().len());
-        assert_eq!(1, blockchain.registered_nodes().len());
+        assert_eq!(1, blockchain.neighbour_nodes().len());
         assert_eq!(1, blockchain.last_block().unwrap().transactions().len());
     }
 

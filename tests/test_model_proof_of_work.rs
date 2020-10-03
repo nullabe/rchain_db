@@ -6,7 +6,7 @@ pub mod test_model_proof_of_work {
     fn test_generate() {
         let proof_of_work = ProofOfWork::new("000", ProofValidatorMock);
 
-        assert_eq!(0, proof_of_work.generate(1))
+        assert_eq!(0, proof_of_work.generate_algorithm_proof(1))
     }
 
     pub struct ProofValidatorMock;

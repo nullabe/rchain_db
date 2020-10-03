@@ -6,6 +6,7 @@ impl Node<BlockchainServer> {
         self.get_blockchain()
             .get_transactions_to_process()
             .post_blocks()
+            .post_nodes()
             .post_transactions();
     }
 }

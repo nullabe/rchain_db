@@ -143,7 +143,7 @@ where
             .ok();
 
         blockchain
-            .serialize_field("registered_nodes", &self.registered_nodes())
+            .serialize_field("registered_nodes", &self.neighbour_nodes())
             .ok();
 
         blockchain.end()
