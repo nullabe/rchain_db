@@ -3,7 +3,7 @@ pub trait Runner {}
 #[derive(Clone, Debug)]
 pub struct NeighbourServer;
 
-#[derive(Debug, Default)]
+#[derive(Clone, Debug, Default)]
 pub struct Node<T> {
     uuid: Option<String>,
     url: Option<String>,

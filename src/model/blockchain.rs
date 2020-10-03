@@ -7,7 +7,7 @@ use crate::model::proof_of_work::{ProofOfWork, ProofValidator};
 use crate::model::transaction::Transaction;
 use crate::model::NeighbourhoodNodes;
 
-pub const PROOF_OF_WORK_DIFFICULTY: &str = "000";
+pub const PROOF_OF_WORK_DIFFICULTY: &str = "00000";
 const SELF_SENDER: &str = "0";
 const REWARD_AMOUNT: f64 = 1.0;
 
@@ -15,7 +15,7 @@ const REWARD_AMOUNT: f64 = 1.0;
 pub struct Blockchain<T, U> {
     blocks: Vec<Block>,
     transactions_to_process: Vec<Transaction>,
-    registered_nodes: NeighbourhoodNodes,
+    neighbour_nodes: NeighbourhoodNodes,
     proof_of_work: ProofOfWork<T>,
     block_hasher: U,
 }
@@ -28,14 +28,14 @@ where
     pub fn from(
         blocks: Vec<Block>,
         transactions_to_process: Vec<Transaction>,
-        registered_nodes: NeighbourhoodNodes,
+        neighbour_nodes: NeighbourhoodNodes,
         proof_of_work: ProofOfWork<T>,
         block_hasher: U,
     ) -> Self {
         Self {
             blocks,
             transactions_to_process,
-            registered_nodes,
+            neighbour_nodes,
             proof_of_work,
             block_hasher,
         }
@@ -53,7 +53,7 @@ where
         Self {
             blocks,
             transactions_to_process,
-            registered_nodes,
+            neighbour_nodes: registered_nodes,
             proof_of_work,
             block_hasher,
         }
@@ -61,10 +61,6 @@ where
 
     pub fn blocks(&self) -> Vec<Block> {
         self.blocks.clone()
-    }
-
-    pub fn last_block(&self) -> Option<&Block> {
-        self.blocks.last()
     }
 
     pub fn add_block(&mut self, node_uuid: &str) -> Result<(), AddBlockToBlockchainError> {
@@ -107,6 +103,16 @@ where
         Ok(())
     }
 
+    pub fn replace_blocks(&mut self, blocks: Vec<Block>) -> &mut Self {
+        self.blocks = blocks;
+
+        self
+    }
+
+    pub fn last_block(&self) -> Option<&Block> {
+        self.blocks.last()
+    }
+
     pub fn transactions_to_process(&self) -> Vec<Transaction> {
         self.transactions_to_process.clone()
     }
@@ -124,18 +130,27 @@ where
         self.blocks.len()
     }
 
-    pub fn registered_nodes(&self) -> &NeighbourhoodNodes {
-        self.registered_nodes.as_ref()
+    pub fn replace_transactions_to_process(
+        &mut self,
+        transactions_to_process: Vec<Transaction>,
+    ) -> &mut Self {
+        self.transactions_to_process = transactions_to_process;
+
+        self
     }
 
-    pub fn add_registered_node(
+    pub fn neighbour_nodes(&self) -> NeighbourhoodNodes {
+        self.neighbour_nodes.clone()
+    }
+
+    pub fn add_neighbour_node(
         &mut self,
         uuid: &str,
         url: &str,
     ) -> Result<(), RegisterNodeToBlockchainError> {
         let mut node = Node::new(NeighbourServer);
 
-        for node in &self.registered_nodes {
+        for node in &self.neighbour_nodes {
             if uuid != node.uuid().unwrap_or(&String::from(""))
                 && url != node.url().unwrap_or(&String::from(""))
             {
@@ -149,12 +164,38 @@ where
 
         node.set_uuid(uuid).set_url(url);
 
-        self.registered_nodes.push(node);
+        self.neighbour_nodes.push(node);
 
         Ok(())
     }
 
     pub fn is_valid(&self) -> bool {
+        let mut previous_block = self.blocks.first();
+
+        if previous_block.is_none() {
+            return true;
+        }
+
+        for block in &self.blocks {
+            if 0 == block.index() {
+                continue;
+            }
+
+            if block.previous_block_hash() != previous_block.unwrap().hash() {
+                return false;
+            }
+
+            if block.algorithm_proof()
+                != self
+                    .proof_of_work
+                    .generate_algorithm_proof(previous_block.unwrap().algorithm_proof())
+            {
+                return false;
+            }
+
+            previous_block = Some(block);
+        }
+
         true
     }
 }

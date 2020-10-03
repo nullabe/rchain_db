@@ -77,6 +77,10 @@ pub mod test_model_blockchain {
             _ => (),
         }
 
+        if !blockchain.is_valid() {
+            return Err(String::from("Blockchain should be valid"));
+        }
+
         let last_block: &Block;
 
         match blockchain.last_block() {
@@ -122,7 +126,7 @@ pub mod test_model_blockchain {
     fn test_register_node() -> Result<(), String> {
         let mut blockchain = Blockchain::new(ProofValidatorMock, BlockHasherMock);
 
-        match blockchain.add_registered_node("uuuuiiiiiddddd", "127.0.0.1:8080") {
+        match blockchain.add_neighbour_node("uuuuiiiiiddddd", "127.0.0.1:8080") {
             Err(err) => {
                 return Err(err.message().clone());
             }
@@ -130,13 +134,13 @@ pub mod test_model_blockchain {
             Ok(_some) => (),
         }
 
-        match blockchain.registered_nodes().first() {
+        match blockchain.neighbour_nodes().first() {
             Some(_node) => (),
 
             None => return Err(String::from("No node found")),
         }
 
-        match blockchain.add_registered_node("uuuuiiiiiddddd", "127.0.0.1:8080") {
+        match blockchain.add_neighbour_node("uuuuiiiiiddddd", "127.0.0.1:8080") {
             Err(_err) => Ok(()),
 
             Ok(_some) => Err(String::from("Registered node must be idempotent")),
